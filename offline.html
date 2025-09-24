@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sin Conexión - Radio PWA</title>
+    <style>
+        :root {
+            --primary-color: #6366f1;
+            --background-color: #0f0f23;
+            --surface-color: #1e1e2e;
+            --text-primary: #ffffff;
+            --text-secondary: #a1a1aa;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .offline-container {
+            text-align: center;
+            max-width: 500px;
+        }
+
+        .offline-icon {
+            font-size: 4rem;
+            color: var(--primary-color);
+            margin-bottom: 2rem;
+        }
+
+        .offline-title {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .offline-message {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 2rem;
+        }
+
+        .offline-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary:hover {
+            background: #4f46e5;
+            transform: translateY(-2px);
+        }
+
+        .network-status {
+            margin-top: 2rem;
+            padding: 1rem;
+            background: var(--surface-color);
+            border-radius: 8px;
+            border: 1px solid #374151;
+        }
+
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 1rem;
+        }
+
+        .status-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #ef4444;
+            animation: pulse 2s infinite;
+        }
+
+        .status-dot.online {
+            background: #10b981;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        .feature-list {
+            text-align: left;
+            margin: 2rem 0;
+        }
+
+        .feature-list h3 {
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .feature-list ul {
+            list-style: none;
+        }
+
+        .feature-list li {
+            padding: 0.5rem 0;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .feature-list li:before {
+            content: "✓";
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+
+        @media (max-width: 480px) {
+            .offline-title {
+                font-size: 1.5rem;
+            }
+            
+            .offline-message {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="offline-container">
+        <div class="offline-icon">
+            <i class="fas fa-wifi-slash" style="font-family: FontAwesome;"></i>
+            📻
+        </div>
+        
+        <h1 class="offline-title">Sin Conexión</h1>
+        
+        <p class="offline-message">
+            No hay conexión a Internet. Algunas funciones están limitadas en modo offline.
+        </p>
+
+        <div class="network-status">
+            <div class="status-indicator">
+                <div class="status-dot" id="network-dot"></div>
+                <span id="network-status">Desconectado</span>
+            </div>
+            <p id="network-message">Esperando conexión...</p>
+        </div>
+
+        <div class="feature-list">
+            <h3>Disponible sin conexión:</h3>
+            <ul>
+                <li>Interfaz de la aplicación</li>
+                <li>Configuraciones guardadas</li>
+                <li>Historial local</li>
+                <li>Favoritos guardados</li>
+            </ul>
+        </div>
+
+        <div class="offline-actions">
+            <button class="btn-primary" onclick="window.location.reload()">
+                🔄 Reintentar Conexión
+            </button>
+            
+            <a href="/" class="btn-primary">
+                🏠 Ir a Inicio
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // Monitor network status
+        function updateNetworkStatus() {
+            const dot = document.getElementById('network-dot');
+            const status = document.getElementById('network-status');
+            const message = document.getElementById('network-message');
+            
+            if (navigator.onLine) {
+                dot.classList.add('online');
+                status.textContent = 'Conectado';
+                message.textContent = '¡Conexión restaurada! Puedes recargar la página.';
+                
+                // Auto redirect after 2 seconds
+                setTimeout(() => {
+                    window.location.href = '/';
+                }, 2000);
+            } else {
+                dot.classList.remove('online');
+                status.textContent = 'Desconectado';
+                message.textContent = 'Esperando conexión...';
+            }
+        }
+
+        // Listen for network changes
+        window.addEventListener('online', updateNetworkStatus);
+        window.addEventListener('offline', updateNetworkStatus);
+
+        // Initial check
+        updateNetworkStatus();
+
+        // Periodic check
+        setInterval(() => {
+            updateNetworkStatus();
+        }, 5000);
+
+        // Service worker check
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.ready.then((registration) => {
+                console.log('Service Worker ready:', registration.scope);
+            });
+        }
+    </script>
+</body>
+</html>

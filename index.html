@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Radio Online PWA</title>
+    
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#1e1e2e">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Radio PWA">
+    
+    <!-- Manifest -->
+    <link rel="manifest" href="manifest.json">
+    
+    <!-- Icons -->
+    <link rel="icon" type="image/png" sizes="32x32" href="icons/icon-32x32.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192x192.png">
+    <link rel="apple-touch-icon" href="icons/icon-192x192.png">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/styles.css">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div id="app">
+        <!-- Navigation -->
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="nav-brand">
+                    <i class="fas fa-radio"></i>
+                    <span>Radio PWA</span>
+                </div>
+                <div class="nav-menu" id="nav-menu">
+                    <a href="#home" class="nav-link active" data-section="home">
+                        <i class="fas fa-home"></i> Inicio
+                    </a>
+                    <a href="#schedule" class="nav-link" data-section="schedule">
+                        <i class="fas fa-calendar-alt"></i> Programación
+                    </a>
+                    <a href="#social" class="nav-link" data-section="social">
+                        <i class="fas fa-share-alt"></i> Redes Sociales
+                    </a>
+                    <a href="#history" class="nav-link" data-section="history">
+                        <i class="fas fa-history"></i> Historial
+                    </a>
+                    <a href="#login" class="nav-link" data-section="login">
+                        <i class="fas fa-user"></i> Ingresar
+                    </a>
+                </div>
+                <div class="nav-toggle" id="nav-toggle">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Home Section -->
+            <section id="home" class="section active">
+                <div class="container">
+                    <div class="player-card">
+                        <div class="player-header">
+                            <h2>Radio en Vivo</h2>
+                            <div class="status-indicator">
+                                <span class="status-dot"></span>
+                                <span id="stream-status">Desconectado</span>
+                            </div>
+                        </div>
+                        
+                        <div class="player-info">
+                            <div class="track-info">
+                                <div class="track-title" id="current-track">Selecciona una emisora</div>
+                                <div class="track-artist" id="current-artist">-</div>
+                            </div>
+                            <div class="album-art">
+                                <img id="track-artwork" src="images/default-cover.jpg" alt="Portada">
+                            </div>
+                        </div>
+
+                        <div class="player-controls">
+                            <button class="control-btn" id="prev-btn">
+                                <i class="fas fa-step-backward"></i>
+                            </button>
+                            <button class="play-btn" id="play-btn">
+                                <i class="fas fa-play"></i>
+                            </button>
+                            <button class="control-btn" id="next-btn">
+                                <i class="fas fa-step-forward"></i>
+                            </button>
+                        </div>
+
+                        <div class="volume-control">
+                            <i class="fas fa-volume-down"></i>
+                            <input type="range" id="volume-slider" min="0" max="100" value="50" class="volume-slider">
+                            <i class="fas fa-volume-up"></i>
+                        </div>
+
+                        <div class="stream-selector">
+                            <label for="stream-source">Emisora:</label>
+                            <select id="stream-source">
+                                <option value="">Seleccionar emisora</option>
+                                <option value="azuracast">AzuraCast Stream</option>
+                                <option value="zenofm">ZenoFM Stream</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <i class="fas fa-users"></i>
+                            <div class="stat-info">
+                                <div class="stat-number" id="listeners-count">0</div>
+                                <div class="stat-label">Oyentes</div>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <i class="fas fa-music"></i>
+                            <div class="stat-info">
+                                <div class="stat-number" id="songs-played">0</div>
+                                <div class="stat-label">Canciones</div>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <i class="fas fa-clock"></i>
+                            <div class="stat-info">
+                                <div class="stat-number" id="uptime">0h</div>
+                                <div class="stat-label">Tiempo al aire</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Schedule Section -->
+            <section id="schedule" class="section">
+                <div class="container">
+                    <h2>Programación</h2>
+                    <div class="schedule-container">
+                        <div class="schedule-header">
+                            <button class="schedule-nav" id="prev-day">
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+                            <h3 id="schedule-date">Hoy</h3>
+                            <button class="schedule-nav" id="next-day">
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                        </div>
+                        <div class="schedule-grid" id="schedule-grid">
+                            <!-- Schedule items will be populated by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Social Media Section -->
+            <section id="social" class="section">
+                <div class="container">
+                    <h2>Redes Sociales</h2>
+                    <div class="social-grid">
+                        <div class="social-card">
+                            <div class="social-header">
+                                <i class="fab fa-facebook-f"></i>
+                                <h3>Facebook</h3>
+                            </div>
+                            <div class="social-content">
+                                <p>Síguenos en Facebook para las últimas noticias y actualizaciones.</p>
+                                <a href="#" class="social-link" target="_blank">Seguir en Facebook</a>
+                            </div>
+                        </div>
+                        <div class="social-card">
+                            <div class="social-header">
+                                <i class="fab fa-twitter"></i>
+                                <h3>Twitter</h3>
+                            </div>
+                            <div class="social-content">
+                                <p>Tweets en tiempo real y noticias de la radio.</p>
+                                <a href="#" class="social-link" target="_blank">Seguir en Twitter</a>
+                            </div>
+                        </div>
+                        <div class="social-card">
+                            <div class="social-header">
+                                <i class="fab fa-instagram"></i>
+                                <h3>Instagram</h3>
+                            </div>
+                            <div class="social-content">
+                                <p>Fotos y videos de behind the scenes.</p>
+                                <a href="#" class="social-link" target="_blank">Seguir en Instagram</a>
+                            </div>
+                        </div>
+                        <div class="social-card">
+                            <div class="social-header">
+                                <i class="fab fa-youtube"></i>
+                                <h3>YouTube</h3>
+                            </div>
+                            <div class="social-content">
+                                <p>Videos de programas y entrevistas.</p>
+                                <a href="#" class="social-link" target="_blank">Suscribirse</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- History Section -->
+            <section id="history" class="section">
+                <div class="container">
+                    <h2>Historial de Reproducción</h2>
+                    <div class="history-controls">
+                        <input type="date" id="history-date" class="form-input">
+                        <button id="search-history" class="btn-primary">Buscar</button>
+                    </div>
+                    <div class="history-list" id="history-list">
+                        <!-- History items will be populated by JavaScript -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Login Section -->
+            <section id="login" class="section">
+                <div class="container">
+                    <div class="login-card">
+                        <div id="login-form-container">
+                            <h2>Iniciar Sesión</h2>
+                            <form id="login-form">
+                                <div class="form-group">
+                                    <label for="username">Usuario</label>
+                                    <input type="text" id="username" name="username" class="form-input" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="password">Contraseña</label>
+                                    <input type="password" id="password" name="password" class="form-input" required>
+                                </div>
+                                <button type="submit" class="btn-primary btn-full">Iniciar Sesión</button>
+                            </form>
+                        </div>
+                        <div id="dashboard-container" style="display: none;">
+                            <h2>Panel de Control</h2>
+                            <div class="dashboard-stats">
+                                <div class="dashboard-card">
+                                    <h3>Oyentes Actuales</h3>
+                                    <p class="dashboard-number" id="dash-listeners">0</p>
+                                </div>
+                                <div class="dashboard-card">
+                                    <h3>Canciones Hoy</h3>
+                                    <p class="dashboard-number" id="dash-songs">0</p>
+                                </div>
+                                <div class="dashboard-card">
+                                    <h3>Tiempo al Aire</h3>
+                                    <p class="dashboard-number" id="dash-uptime">0h</p>
+                                </div>
+                            </div>
+                            <div class="dashboard-actions">
+                                <button id="admin-panel-btn" class="btn-secondary">Panel de Administración</button>
+                                <button id="logout-btn" class="btn-danger">Cerrar Sesión</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Install Prompt -->
+    <div id="install-prompt" class="install-prompt" style="display: none;">
+        <div class="install-content">
+            <i class="fas fa-download"></i>
+            <p>¡Instala la app para una mejor experiencia!</p>
+            <button id="install-btn" class="btn-primary">Instalar</button>
+            <button id="dismiss-install" class="btn-text">Más tarde</button>
+        </div>
+    </div>
+
+    <!-- Audio element -->
+    <audio id="radio-player" preload="none"></audio>
+
+    <!-- Scripts -->
+    <script src="js/app.js"></script>
+    <script src="js/player.js"></script>
+    <script src="js/pwa.js"></script>
+    <script src="js/auth.js"></script>
+</body>
+</html>
